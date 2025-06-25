@@ -109,3 +109,116 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            clearErrors();
+            
+            // Get form data
+            const formData = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                subject: document.getElementById('subject').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+            
+            // Validate form
+            let isValid = true;
+            
+            if (!formData.firstName) {
+                showError('firstName', 'Please enter your first name');
+                isValid = false;
+            }
+            
+            if (!formData.lastName) {
+                showError('lastName', 'Please enter your last name');
+                isValid = false;
+            }
+            
+            if (!formData.email) {
+                showError('email', 'Please enter your email address');
+                isValid = false;
+            } else if (!isValidEmail(formData.email)) {
+                showError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            if (!formData.subject) {
+                showError('subject', 'Please enter a subject');
+                isValid = false;
+            }
+            
+            if (!formData.message) {
+                showError('message', 'Please enter your message');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Simulate form submission
+                const submitButton = document.querySelector('.submit-button');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+                
+                setTimeout(() => {
+                    // Show success message
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Reset form
+                    document.getElementById('contactForm').reset();
+                    
+                    // Reset button
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Send Message';
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 5000);
+                }, 1500);
+            }
+        });
+        
+        function showError(fieldName, message) {
+            const field = document.getElementById(fieldName);
+            const errorElement = document.getElementById(fieldName + 'Error');
+            
+            field.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            const inputElements = document.querySelectorAll('.form-input, .form-textarea');
+            
+            errorElements.forEach(element => {
+                element.style.display = 'none';
+            });
+            
+            inputElements.forEach(element => {
+                element.classList.remove('error');
+            });
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Clear errors when user starts typing
+        document.querySelectorAll('.form-input, .form-textarea').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                    const errorElement = document.getElementById(this.id + 'Error');
+                    errorElement.style.display = 'none';
+                }
+            });
+        });
